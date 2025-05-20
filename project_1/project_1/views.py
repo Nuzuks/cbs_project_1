@@ -87,7 +87,7 @@ def view_notes(request):
         # query = """
         #     SELECT id, title, content, created_at
         #     FROM project_1_note
-        #     WHERE title LIKE %s OR content LIKE %s
+        #     WHERE title LIKE ? OR content LIKE ?
         # """
         # search_param = f"%{search_term}%" FIX
         with connection.cursor() as cursor:
