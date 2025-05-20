@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseForbidden
 from .models import Note , CustomUser # Custom user doesn't need to be imported with the fix
 from django.db import connection # For raw SQL queries
-from django.utils.html import escape # For demonstrating proper escaping vs. no escaping
 # from django.contrib.auth.models import User # fix
 # from django.contrib.auth import authenticate, login # fix
 # from django.contrib.auth.decorators import login_required, user_passes_test #fix
