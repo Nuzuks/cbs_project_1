@@ -3,10 +3,15 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponseForbidden
 from .models import Note , CustomUser # Custom user doesn't need to be imported with the fix
 from django.db import connection # For raw SQL queries
+# import bleach # Used to sanitize user input
 # from django.contrib.auth.models import User # fix
 # from django.contrib.auth import authenticate, login # fix
 # from django.contrib.auth.decorators import login_required, user_passes_test #fix
 
+ALLOWED_TAGS = ['b', 'i', 'u', 'a', 'p', 'br', 'ul', 'ol', 'li', 'strong', 'em']
+ALLOWED_ATTRIBUTES = {
+    'a': ['href', 'title', 'rel'],
+}
 
 def home(request):
     return render(request, 'home.html')
@@ -69,7 +74,12 @@ def add_note(request):
 
         # This code works with the django User class
         # author = request.user
-
+        # content = bleach.clean(
+        #     content,
+        #     tags=ALLOWED_TAGS,
+        #     attributes=ALLOWED_ATTRIBUTES,
+        #     strip=True
+        # )
         # Content is saved as is, without sanitization.
         Note.objects.create(author=author, title=title, content=content)
         return redirect('view_notes')
@@ -103,10 +113,16 @@ def view_notes(request):
     else:
         all_notes_obj = Note.objects.all().order_by('-created_at')
         for note_obj in all_notes_obj:
+            # content = bleach.clean(
+            # note_obj.content,
+            # tags=ALLOWED_TAGS,
+            # attributes=ALLOWED_ATTRIBUTES,
+            # strip=True
+            # )
             notes.append({
                 'id': note_obj.id,
                 'title': note_obj.title,
-                'content': note_obj.content, 
+                'content': note_obj.content, # 'content': content, 
                 'author_username': note_obj.author.username if note_obj.author else "Anonymous"
             })
     
