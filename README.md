@@ -1,4 +1,4 @@
-# Project 1: Vulnerable Django Notes
+# Project 1:
 
 This Django notes application is deliberately built with several security vulnerabilities for educational purposes.
 
