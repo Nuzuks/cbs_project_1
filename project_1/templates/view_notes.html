@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}View Notes{% endblock %}
+
+{% block content %}
+<h2>View Notes</h2>
+
+<!-- FLAW 1: SQL Injection -->
+<!-- The search form below submits a query parameter that is used insecurely in views.py -->
+<form method="get" action="{% url 'view_notes' %}">
+    <input type="text" name="search" placeholder="Search notes by title/content..." value="{{ search_term|default:'' }}">
+    <button type="submit">Search</button>
+</form>
+
+<hr>
+
+{% if notes %}
+    {% for note in notes %}
+        <div class="note">
+            <h3>{{ note.title }} (ID: {{note.id}})</h3>
+            <p>By: {{ note.author_username|default:"Unknown" }}</p>
+            <!-- The 'note.content' is rendered with '|safe', disabling Django's default XSS protection. Remove safe to fix the vulnerability -->
+            <!-- If 'note.content' contains malicious JavaScript, it will be executed. -->
+            <p>Content: {{ note.content|safe }}</p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No notes found, or search returned no results.</p>
+{% endif %}
+
+<hr>
+
+{% endblock %}

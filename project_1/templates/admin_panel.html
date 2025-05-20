@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel{% endblock %}
+
+{% block content %}
+<h2>Super Secret Admin Panel</h2>
+<!-- FIXED CODE FOR DJANGO USERS CLASS HERE{# {% if user.is_superuser %} #} -->
+{% if request.session.is_admin %}
+    <p style="color:green;">Access Granted (You are an admin!)</p>
+{% else %}
+    <p style="color:red; font-weight:bold;">WARNING: ACCESSING WITHOUT ADMIN RIGHTS!</p>
+{% endif %}
+
+<p>This page should only be visible to administrators.</p>
+<p>Current "logged-in" user: {{ request.session.username }} (Admin status in session: {{ request.session.is_admin|yesno:"Yes,No" }})</p>
+
+<h3>User List</h3>
+<ul>
+    {% for u in users %}
+        <li>
+            Username: {{ u.username }} | 
+            Password: <strong style="color: #c00;">{{ u.password }}</strong> |<!-- Plaintext passwords diplayed on admin panel! Delete this line to remove them from the admin panel.-->
+            <!-- FIX for django Users class {# { u.is_superuser|yesno:"Yes,No" } #} -->
+            Is Admin: {{ u.is_admin|yesno:"Yes,No" }}
+        </li>
+    {% empty %}
+        <li>No users found.</li>
+    {% endfor %}
+</ul>
+{% endblock %}

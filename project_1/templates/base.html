@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Vulnerable App{% endblock %}</title>
+    <style>
+        body { font-family: sans-serif; margin: 20px; background-color: #f4f4f4; }
+        nav { background-color: #333; padding: 10px; margin-bottom: 20px; }
+        nav a { color: white; margin: 0 10px; text-decoration: none; }
+        nav a:hover { text-decoration: underline; }
+        .container { background-color: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .error { color: red; font-weight: bold; }
+        .note { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; background-color: #fff; }
+        .note h3 { margin-top: 0; }
+        input[type="text"], input[type="password"], textarea {
+            width: calc(100% - 22px); padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 3px;
+        }
+        button { padding: 10px 15px; background-color: #5cb85c; color: white; border: none; border-radius: 3px; cursor: pointer; }
+        button:hover { background-color: #4cae4c; }
+        .user-info { float: right; color: white; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'view_notes' %}">View Notes</a>
+        <!-- FIX{# {% if user.is_authenticated %} #} -->
+        {% if request.session.user_id %}
+            <a href="{% url 'add_note' %}">Add Note</a>
+            <!-- FIX{# {% if user.is_superuser %} #} -->
+            {% if request.session.is_admin %}
+                 <a href="{% url 'admin_panel' %}" style="color:yellow;">Admin Panel</a>
+            {% endif %}
+            <span class="user-info">
+                Logged in as: {{ request.session.username }} (Admin: {{ request.session.is_admin|yesno:"Yes,No" }})
+                <a href="{% url 'logout' %}">Logout</a>
+            </span>
+        {% else %}
+            <a href="{% url 'register' %}">Register</a>
+            <a href="{% url 'login' %}">Login</a>
+        {% endif %}
+    </nav>
+    <div class="container">
+        {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>
